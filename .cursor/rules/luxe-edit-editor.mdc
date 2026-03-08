@@ -1,0 +1,101 @@
+---
+description: luxe-edit rich text editor configuration for MindLog note editor
+globs: ["**/note-editor/**", "**/components/**/editor*", "**/components/**/note*"]
+alwaysApply: false
+---
+
+# Note Editor: luxe-edit
+
+MindLog uses **luxe-edit** as the rich text editor for notes.
+
+## Setup
+
+```tsx
+import { LuxeEditor, getEditorJSON } from 'luxe-edit';
+import type { ToolbarItem } from 'luxe-edit';
+import 'luxe-edit/index.css';
+```
+
+## Toolbar Configuration
+
+### Top Toolbar Items
+
+```ts
+const toolbarItems: ToolbarItem[] = [
+  { type: 'undo' },
+  { type: 'redo' },
+  { type: 'divider' },
+  { type: 'bold' },
+  { type: 'italic' },
+  { type: 'underline' },
+  { type: 'strikethrough' },
+  { type: 'divider' },
+  { type: 'textColor' },
+  { type: 'backgroundColor' },
+  { type: 'divider' },
+  { type: 'headingDropdown' },
+  { type: 'divider' },
+  { type: 'link' },
+  { type: 'divider' },
+  { type: 'alignLeft' },
+  { type: 'alignCenter' },
+  { type: 'alignRight' },
+  { type: 'alignJustify' },
+  { type: 'divider' },
+  { type: 'fullscreen' }
+];
+```
+
+### Floating Toolbar (appears on text selection)
+
+```ts
+const floatingToolbarItems: ToolbarItem[] = [
+  { type: 'bold' },
+  { type: 'italic' },
+  { type: 'underline' },
+  { type: 'strikethrough' },
+  { type: 'link' }
+];
+```
+
+## Component Usage
+
+```tsx
+<LuxeEditor
+  initialConfig={{ namespace: 'MyEditor', theme: {} }}
+  showToolbar={true}
+  showFloatingToolbar={true}
+  toolbarItems={toolbarItems}
+  floatingToolbarItems={floatingToolbarItems}
+  colorScheme="light"
+  onChange={(editorState) => {
+    setJson(getEditorJSON(editorState));
+  }}
+/>
+```
+
+## Persistence
+
+- Save editor state as JSON to the database (Note.content or similar)
+- Use `getEditorJSON(editorState)` to get JSON from onChange
+
+## Rendering Saved Content
+
+```tsx
+import { getMarkdownFromJSON } from 'luxe-edit';
+
+// Convert saved JSON → Markdown string
+const markdown = getMarkdownFromJSON(savedJson);
+
+// Render as plain text
+<pre>{markdown}</pre>
+
+// Or use a Markdown renderer (e.g. react-markdown)
+<ReactMarkdown>{markdown}</ReactMarkdown>
+```
+
+## Display Options
+
+- **Theme**: Light / Dark (use `colorScheme` prop)
+- **Top Toolbar**: Always visible
+- **Floating Toolbar**: Appears when text is selected
