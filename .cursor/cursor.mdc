@@ -1,0 +1,170 @@
+---
+alwaysApply: true
+---
+# Tech Stack
+
+Frontend:
+- Next.js (App Router)
+- Tailwind CSS
+- shadcn/ui
+- Zustand for state management
+
+Backend:
+- Next.js API routes
+
+Database:
+- SQLite
+- Prisma ORM
+
+AI:
+- OpenAI API or Gemini API
+
+Package Manager:
+- pnpm
+
+---
+
+# Architecture
+
+MindLog runs entirely on the user's local machine.
+
+System architecture:
+
+UI (Next.js)
+    ↓
+API Routes
+    ↓
+Prisma ORM
+    ↓
+SQLite Database
+    ↓
+AI Insights Engine
+
+---
+
+# Core Concepts
+
+## Diary
+
+A diary is a workspace that contains notes.
+
+Examples:
+- personal
+- work
+- startup
+
+Users can create multiple diaries and switch between them.
+
+---
+
+## Note
+
+A note is a piece of text written by the user.
+
+Example note:
+
+March 8
+
+Worked on MindLog architecture.
+Thinking about RAG indexing.
+
+Notes belong to a specific diary.
+
+---
+
+# Database Models
+
+Diary
+- id
+- name
+- createdAt
+
+Note
+- id
+- diaryId
+- content
+- createdAt
+
+Future models (Phase 2):
+- Insight
+- Idea
+- Embedding
+
+---
+
+# UI Principles
+
+The UI should be:
+
+- simple
+- minimal
+- fast
+- focused on writing
+
+Main UI layout:
+
+Sidebar
+- diary list
+- create diary
+
+Main panel
+- notes
+- AI insights
+
+---
+
+# Code Guidelines
+
+Use:
+
+- TypeScript
+- functional React components
+- server components when possible
+
+Avoid:
+
+- unnecessary abstractions
+- overly complex architecture
+
+Keep the project easy for open-source contributors.
+
+---
+
+# Folder Structure
+
+mindlog/
+
+app/
+dashboard/
+diary/
+
+app/api/
+diaries/
+notes/
+
+components/
+sidebar/
+diary-switcher/
+note-editor/
+insights/
+
+lib/
+prisma/
+ai/
+
+store/
+
+prisma/
+schema.prisma
+
+---
+
+# Future Roadmap (Phase 2)
+
+Phase 2 will introduce:
+
+- RAG search on notes
+- MCP tools
+- weekly reflections
+- LinkedIn post generation
+- idea tracking
