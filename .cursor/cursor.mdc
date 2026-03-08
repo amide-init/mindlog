@@ -82,7 +82,7 @@ Diary
 Note
 - id
 - diaryId
-- content
+- content (JSON — luxe-edit format)
 - createdAt
 
 Future models (Phase 2):

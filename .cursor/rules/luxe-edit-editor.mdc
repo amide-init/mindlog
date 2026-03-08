@@ -74,17 +74,22 @@ const floatingToolbarItems: ToolbarItem[] = [
 />
 ```
 
-## Persistence
+## Content Format: JSON
 
-- Save editor state as JSON to the database (Note.content or similar)
-- Use `getEditorJSON(editorState)` to get JSON from onChange
+luxe-edit returns data in **JSON format**. MindLog stores note content as JSON.
+
+- `getEditorJSON(editorState)` returns the JSON from onChange
+- Store this JSON in `Note.content` (database column type: `String` or `Json`)
+- When loading a note, pass the saved JSON to LuxeEditor as initial content
 
 ## Rendering Saved Content
+
+Load JSON from `Note.content`, then convert to Markdown or HTML for display:
 
 ```tsx
 import { getMarkdownFromJSON } from 'luxe-edit';
 
-// Convert saved JSON → Markdown string
+// savedJson = Note.content from database
 const markdown = getMarkdownFromJSON(savedJson);
 
 // Render as plain text
