@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,10 +24,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var t = localStorage.getItem('mindlog-theme');
+                  if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+                  else if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+                  else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme', 'dark');
+                  else document.documentElement.setAttribute('data-theme', 'light');
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Navbar />
         {children}
       </body>
     </html>

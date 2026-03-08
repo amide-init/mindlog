@@ -38,14 +38,29 @@ const floatingToolbarItems: ToolbarItem[] = [
 ];
 
 function useColorScheme(): "light" | "dark" {
-  const [scheme, setScheme] = useState<"light" | "dark">("dark");
+  const [scheme, setScheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    setScheme(mq.matches ? "dark" : "light");
-    const handler = () => setScheme(mq.matches ? "dark" : "light");
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    if (typeof window === "undefined") return;
+
+    const getFromDom = (): "light" | "dark" =>
+      document.documentElement.getAttribute("data-theme") === "dark"
+        ? "dark"
+        : "light";
+
+    setScheme(getFromDom());
+
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ theme?: string }>).detail;
+      if (detail?.theme === "dark" || detail?.theme === "light") {
+        setScheme(detail.theme);
+      } else {
+        setScheme(getFromDom());
+      }
+    };
+
+    window.addEventListener("mindlog-theme-change", handler);
+    return () => window.removeEventListener("mindlog-theme-change", handler);
   }, []);
 
   return scheme;
