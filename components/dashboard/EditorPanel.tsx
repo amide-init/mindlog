@@ -66,7 +66,12 @@ function useColorScheme(): "light" | "dark" {
   return scheme;
 }
 
-export function EditorPanel() {
+type EditorPanelProps = {
+  initialJSON?: unknown;
+  onChange?: (json: unknown) => void;
+};
+
+export function EditorPanel({ initialJSON, onChange }: EditorPanelProps) {
   const colorScheme = useColorScheme();
 
   return (
@@ -74,13 +79,15 @@ export function EditorPanel() {
       <div className="flex-1 overflow-hidden">
         <LuxeEditor
           initialConfig={{ namespace: "MindLogEditor" }}
+          initialJSON={initialJSON ?? undefined}
           showToolbar
           showFloatingToolbar
           toolbarItems={toolbarItems}
           floatingToolbarItems={floatingToolbarItems}
           colorScheme={colorScheme}
           onChange={(editorState) => {
-            getEditorJSON(editorState);
+            const json = getEditorJSON(editorState);
+            onChange?.(json);
           }}
         />
       </div>

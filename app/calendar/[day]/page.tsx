@@ -1,5 +1,4 @@
-import { ActionsPanel } from "@/components/dashboard/ActionsPanel";
-import { EditorPanel } from "@/components/dashboard/EditorPanel";
+import { CalendarDayView } from "@/components/calendar/CalendarDayView";
 
 type Props = {
   params: Promise<{ day: string }>;
@@ -38,14 +37,7 @@ export default async function CalendarDayPage({ params }: Props) {
             {label}
           </span>
         </header>
-        <section className="flex flex-1 flex-col gap-4 md:flex-row">
-          <div className="min-w-0 flex-1">
-            <EditorPanel />
-          </div>
-          <div className="w-full shrink-0 md:w-80">
-            <ActionsPanel />
-          </div>
-        </section>
+        <CalendarDayView day={day} />
       </main>
     </div>
   );

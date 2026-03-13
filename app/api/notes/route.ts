@@ -26,6 +26,41 @@ async function getOrCreateDefaultDiary() {
   });
 }
 
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const day = searchParams.get("day");
+    if (!day || !/^\d{4}-\d{2}-\d{2}$/.test(day)) {
+      return NextResponse.json(
+        { error: "Query param `day` (YYYY-MM-DD) is required" },
+        { status: 400 },
+      );
+    }
+
+    const diary = await getOrCreateDefaultDiary();
+    const note = await prisma.note.findUnique({
+      where: {
+        diary_day_unique: {
+          diaryId: diary.id,
+          day,
+        },
+      },
+    });
+
+    if (!note) {
+      return NextResponse.json({ note: null }, { status: 200 });
+    }
+
+    return NextResponse.json({ note }, { status: 200 });
+  } catch (error) {
+    console.error("[GET /api/notes] error", error);
+    return NextResponse.json(
+      { error: "Failed to load note" },
+      { status: 500 },
+    );
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as {
@@ -49,6 +84,7 @@ export async function POST(req: Request) {
     }
 
     const day = getTodayISO(body.day);
+    const content = body.content ?? {};
 
     let diaryId = body.diaryId;
     if (!diaryId) {
@@ -66,10 +102,10 @@ export async function POST(req: Request) {
       create: {
         diaryId,
         day,
-        content: body.content,
+        content,
       },
       update: {
-        content: body.content,
+        content,
       },
     });
 
@@ -81,8 +117,10 @@ export async function POST(req: Request) {
     );
   } catch (error) {
     console.error("[POST /api/notes] error", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to save note for day";
     return NextResponse.json(
-      { error: "Failed to save note for day" },
+      { error: message },
       { status: 500 },
     );
   }
