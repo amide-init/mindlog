@@ -10,12 +10,7 @@ export function Navbar() {
         <Link href="/" className="text-sm font-semibold tracking-tight">
           MindLog
         </Link>
-        <div className="flex items-center gap-3">
-          <span className="hidden text-[10px] uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400 sm:inline">
-            Developer Preview
-          </span>
-          <ThemeToggle />
-        </div>
+        <ThemeToggle />
       </div>
     </header>
   );
