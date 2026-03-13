@@ -15,21 +15,18 @@ function getTodayISO(dateStr?: string) {
   return `${year}-${month}-${day}`;
 }
 
-async function getOrCreateDefaultDiary() {
-  const name = "personal";
-  const existing = await prisma.diary.findFirst({
-    where: { name },
-  });
-  if (existing) return existing;
-  return prisma.diary.create({
-    data: { name },
-  });
-}
-
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const day = searchParams.get("day");
+    const diaryId = searchParams.get("diaryId");
+
+    if (!diaryId) {
+      return NextResponse.json(
+        { error: "Query param `diaryId` is required" },
+        { status: 400 },
+      );
+    }
     if (!day || !/^\d{4}-\d{2}-\d{2}$/.test(day)) {
       return NextResponse.json(
         { error: "Query param `day` (YYYY-MM-DD) is required" },
@@ -37,11 +34,10 @@ export async function GET(req: Request) {
       );
     }
 
-    const diary = await getOrCreateDefaultDiary();
     const note = await prisma.note.findUnique({
       where: {
         diary_day_unique: {
-          diaryId: diary.id,
+          diaryId,
           day,
         },
       },
@@ -86,10 +82,12 @@ export async function POST(req: Request) {
     const day = getTodayISO(body.day);
     const content = body.content ?? {};
 
-    let diaryId = body.diaryId;
-    if (!diaryId) {
-      const diary = await getOrCreateDefaultDiary();
-      diaryId = diary.id;
+    const diaryId = body.diaryId;
+    if (!diaryId || typeof diaryId !== "string") {
+      return NextResponse.json(
+        { error: "`diaryId` is required" },
+        { status: 400 },
+      );
     }
 
     const note = await prisma.note.upsert({

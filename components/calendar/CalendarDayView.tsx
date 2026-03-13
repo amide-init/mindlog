@@ -3,22 +3,27 @@
 import { useCallback, useEffect, useState } from "react";
 import { ActionsPanel } from "@/components/dashboard/ActionsPanel";
 import { EditorPanel } from "@/components/dashboard/EditorPanel";
+import { useDiary } from "@/components/calendar/DiaryContext";
 
 type CalendarDayViewProps = {
   day: string;
 };
 
 export function CalendarDayView({ day }: CalendarDayViewProps) {
+  const { diaryId } = useDiary();
   const [content, setContent] = useState<unknown>(null);
   const [initialLoaded, setInitialLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!diaryId) return;
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetch(`/api/notes?day=${encodeURIComponent(day)}`);
+        const res = await fetch(
+          `/api/notes?day=${encodeURIComponent(day)}&diaryId=${encodeURIComponent(diaryId)}`,
+        );
         const data = await res.json();
         if (cancelled) return;
         if (data.note?.content != null) {
@@ -34,9 +39,10 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
     return () => {
       cancelled = true;
     };
-  }, [day]);
+  }, [day, diaryId]);
 
   const handleSave = useCallback(async () => {
+    if (!diaryId) return;
     setSaveError(null);
     setSaving(true);
     try {
@@ -46,6 +52,7 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
         body: JSON.stringify({
           content: content ?? {},
           day,
+          diaryId,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -58,7 +65,7 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
     } finally {
       setSaving(false);
     }
-  }, [content, day]);
+  }, [content, day, diaryId]);
 
   return (
     <section className="flex flex-1 flex-col gap-4 md:flex-row">

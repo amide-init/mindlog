@@ -5,12 +5,23 @@ import { PrismaClient } from "@prisma/client";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-const databaseUrl = process.env["DATABASE_URL"]?.startsWith("file:")
-  ? process.env["DATABASE_URL"]
-  : pathToFileURL(path.join(process.cwd(), "prisma", "mindlog.db")).href;
+const defaultDbPath = path.join(process.cwd(), "prisma", "mindlog.db");
+const defaultDbUrl = pathToFileURL(defaultDbPath).href;
+
+const envUrl = process.env["DATABASE_URL"];
+const databaseUrl =
+  typeof envUrl === "string" && envUrl.startsWith("file:")
+    ? envUrl
+    : defaultDbUrl;
+
+// Ensure we never pass undefined to libsql (e.g. when env is missing in Turbopack)
+const url =
+  typeof databaseUrl === "string" && databaseUrl.length > 0
+    ? databaseUrl
+    : defaultDbUrl;
 
 const libsql = createClient({
-  url: databaseUrl,
+  url,
 });
 
 const adapter = new PrismaLibSql(libsql);

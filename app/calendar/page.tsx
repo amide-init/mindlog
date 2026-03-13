@@ -1,11 +1,12 @@
 import { MonthlyCalendar } from "@/components/calendar/MonthlyCalendar";
+import { CurrentDiaryHeader } from "@/components/calendar/CurrentDiaryHeader";
 
 export default function CalendarPage() {
   return (
     <main className="flex min-h-[calc(100vh-3rem)] w-full flex-1 justify-center bg-zinc-100 px-4 py-4 text-zinc-900 dark:bg-[radial-gradient(circle_at_top,_#18181b,_#020617)] dark:text-zinc-50 sm:px-6 lg:px-8 lg:py-6">
       <div className="flex w-full max-w-4xl flex-col gap-4">
-        <header className="text-xs text-zinc-500">
-          <span>Calendar</span>
+        <header>
+          <CurrentDiaryHeader />
         </header>
         <div className="grid gap-4 md:grid-cols-[2fr,3fr]">
           <MonthlyCalendar />
