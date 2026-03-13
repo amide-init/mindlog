@@ -2,6 +2,9 @@
   "name": "mindlog",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,8 +12,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@prisma/adapter-libsql": "^7.4.2",
     "@prisma/client": "^7.4.2",
-    "better-sqlite3": "^12.6.2",
+    "@libsql/client": "^0.14.0",
     "luxe-edit": "^0.2.2",
     "next": "16.1.6",
     "prisma": "^7.4.2",

@@ -9,6 +9,10 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // SQLite: use file:./prisma/mindlog.db (or set DATABASE_URL="file:./prisma/mindlog.db")
+    url:
+      process.env["DATABASE_URL"]?.startsWith("file:")
+        ? process.env["DATABASE_URL"]
+        : "file:./prisma/mindlog.db",
   },
 });

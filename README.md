@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Requirements
+
+- **Node.js >= 22.5** (recommended for SQLite; avoids native module build issues)
+- pnpm
+
+If you use nvm: `nvm use` (or `nvm install 22` then `nvm use 22`).
+
 ## Getting Started
 
 First, run the development server:
