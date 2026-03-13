@@ -1,30 +1,15 @@
 // Note: export is PrismaLibSql (lowercase 'q'), not PrismaLibSQL
+// v7.x API: PrismaLibSql takes a Config object { url }, not a pre-created Client
 import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { createClient } from "@libsql/client/node";
 import { PrismaClient } from "@prisma/client";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 
-const defaultDbPath = path.join(process.cwd(), "prisma", "mindlog.db");
-const defaultDbUrl = pathToFileURL(defaultDbPath).href;
-
-const envUrl = process.env["DATABASE_URL"];
-const databaseUrl =
-  typeof envUrl === "string" && envUrl.startsWith("file:")
-    ? envUrl
-    : defaultDbUrl;
-
-// Ensure we never pass undefined to libsql (e.g. when env is missing in Turbopack)
+// libsql accepts "file:<path>" where path can be relative or absolute
 const url =
-  typeof databaseUrl === "string" && databaseUrl.length > 0
-    ? databaseUrl
-    : defaultDbUrl;
+  process.env["DATABASE_URL"] ??
+  `file:${path.resolve(process.cwd(), "prisma", "mindlog.db")}`;
 
-const libsql = createClient({
-  url,
-});
-
-const adapter = new PrismaLibSql(libsql);
+const adapter = new PrismaLibSql({ url });
 
 const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
