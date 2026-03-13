@@ -6,3 +6,24 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
+model Diary {
+  id        String  @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  notes Note[]
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  diaryId   String
+  diary     Diary    @relation(fields: [diaryId], references: [id], onDelete: Cascade)
+  /** ISO date string like "2026-03-08" representing the day of the entry */
+  day       String
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([diaryId, day], name: "diary_day_unique")
+}
