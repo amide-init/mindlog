@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -60,6 +61,8 @@ export function MonthlyCalendar() {
     return `${y}-${m}-${d}`;
   }, [today]);
 
+  const router = useRouter();
+
   const goMonth = (delta: number) => {
     setCursor((prev) => {
       const next = new Date(prev.year, prev.month + delta, 1);
@@ -106,7 +109,7 @@ export function MonthlyCalendar() {
 
       <div className="grid flex-1 grid-cols-7 gap-1 text-[11px]">
         {cells.map((cell, idx) => {
-          if (cell.day === null) {
+          if (cell.day === null || !cell.dateKey) {
             return <div key={idx} className="h-8 rounded-md" />;
           }
 
@@ -116,6 +119,7 @@ export function MonthlyCalendar() {
             <button
               key={cell.dateKey}
               type="button"
+              onClick={() => router.push(`/calendar/${cell.dateKey}`)}
               className={`flex h-8 items-center justify-center rounded-md border text-xs transition ${
                 isToday
                   ? "border-zinc-900 bg-zinc-900 text-zinc-50 dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
