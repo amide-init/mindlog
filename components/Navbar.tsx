@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
+import { DiarySwitcher } from "@/components/calendar/DiarySwitcher";
 
 export function Navbar() {
   return (
@@ -10,7 +11,10 @@ export function Navbar() {
         <Link href="/" className="text-sm font-semibold tracking-tight">
           MindLog
         </Link>
-        <ThemeToggle />
+        <div className="flex items-center gap-3">
+          <DiarySwitcher />
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
