@@ -9,14 +9,10 @@ export function CurrentDiaryHeader() {
   if (!current) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-      <span>Calendar</span>
-      <span aria-hidden className="text-zinc-400 dark:text-zinc-500">
-        ·
-      </span>
-      <span className="font-medium text-zinc-700 dark:text-zinc-300">
+    <div className="flex flex-wrap items-baseline gap-2">
+      <h1 className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
         {current.name}
-      </span>
+      </h1>
     </div>
   );
 }

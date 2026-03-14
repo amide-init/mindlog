@@ -119,9 +119,9 @@ export default function CalendarDayPage({ params }: Props) {
         <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-1">
             <CurrentDiaryHeader />
-            <p className="text-xs text-zinc-500">
-              <span>Entry for </span>
-              <span className="font-medium text-zinc-700 dark:text-zinc-300">
+            <p className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+              <span>Entry for</span>
+              <span className="inline-flex items-center rounded-full border border-red-200 bg-red-50 px-3 py-0.5 text-xs font-semibold text-red-800 shadow-sm transition dark:border-red-500/60 dark:bg-red-900/40 dark:text-red-200">
                 {label}
               </span>
             </p>
