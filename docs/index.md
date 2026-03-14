@@ -25,5 +25,6 @@ Open `http://localhost:3000`.
 
 ## License
 
-MIT — see `LICENSE`.
+MindLog is open source under the **MIT License**.  
+See [LICENSE](https://github.com/amide-init/mindlog/blob/main/LICENSE) in the repository.
 
