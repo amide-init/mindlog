@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useDiary } from "@/components/calendar/DiaryContext";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 const TIMEZONE_STORAGE_KEY = "mindlog-timezone";
 
@@ -28,9 +29,12 @@ const COMMON_TIMEZONES = [
   "Australia/Sydney",
 ];
 
+type PendingDelete = { id: string; name: string } | null;
+
 export default function SettingsPage() {
   const { diaries, diaryId, refetchDiaries } = useDiary();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<PendingDelete>(null);
   const [timeZone, setTimeZone] = useState<string>(() => getInitialTimeZone());
 
   useEffect(() => {
@@ -50,13 +54,17 @@ export default function SettingsPage() {
     [diaries],
   );
 
-  const handleDelete = async (id: string, name: string) => {
-    if (deletingId) return;
-    const confirmed = window.confirm(
-      `Delete diary "${name}" and all of its notes? This cannot be undone.`,
-    );
-    if (!confirmed) return;
+  const openDeleteModal = (id: string, name: string) => {
+    setPendingDelete({ id, name });
+  };
 
+  const closeDeleteModal = () => {
+    if (!deletingId) setPendingDelete(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    const { id, name } = pendingDelete;
     setDeletingId(id);
     try {
       const res = await fetch(`/api/diaries?id=${encodeURIComponent(id)}`, {
@@ -67,6 +75,7 @@ export default function SettingsPage() {
         alert(data.error ?? "Failed to delete diary");
         return;
       }
+      setPendingDelete(null);
       await refetchDiaries();
     } catch (err) {
       alert(
@@ -132,7 +141,7 @@ export default function SettingsPage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => handleDelete(d.id, d.name)}
+                    onClick={() => openDeleteModal(d.id, d.name)}
                     disabled={deletingId === d.id}
                     className="inline-flex h-7 items-center justify-center rounded-md border border-red-200 bg-red-50 px-2.5 text-[11px] font-medium text-red-700 shadow-sm transition hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-red-500/60 dark:bg-red-950/40 dark:text-red-200 dark:hover:border-red-400 dark:hover:bg-red-900/60"
                   >
@@ -174,6 +183,22 @@ export default function SettingsPage() {
           </div>
         </section>
       </div>
+
+      <ConfirmModal
+        open={pendingDelete !== null}
+        title="Delete diary"
+        message={
+          pendingDelete
+            ? `Delete diary "${pendingDelete.name}" and all of its notes? This cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        loading={deletingId !== null}
+        onConfirm={confirmDelete}
+        onCancel={closeDeleteModal}
+      />
     </main>
   );
 }
