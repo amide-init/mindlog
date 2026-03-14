@@ -6,10 +6,13 @@
     "node": ">=22.5.0"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "NEXT_PUBLIC_APP_VERSION=$npm_package_version next dev",
+    "build": "NEXT_PUBLIC_APP_VERSION=$npm_package_version next build",
+    "start": "NEXT_PUBLIC_APP_VERSION=$npm_package_version next start",
     "lint": "eslint",
+    "docs:dev": "pnpm --dir docs dev",
+    "docs:build": "pnpm --dir docs build",
+    "docs:preview": "pnpm --dir docs preview",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
