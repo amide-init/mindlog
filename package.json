@@ -19,7 +19,7 @@
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
     "dev:desktop": "concurrently -n web,electron -c \"cyan,magenta\" \"pnpm dev\" \"cross-env NEXT_DEV_URL=http://localhost:3000 electron electron/main.cjs\"",
-    "build:desktop": "next build && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public 2>/dev/null || true && mkdir -p .next/standalone/prisma && cp -r prisma/migrations .next/standalone/prisma/migrations && electron-builder --mac",
+    "build:desktop": "next build && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public 2>/dev/null || true && mkdir -p .next/standalone/prisma && cp -r prisma/migrations .next/standalone/prisma/migrations && electron-builder --mac --publish never",
     "dist": "pnpm build:desktop"
   },
   "dependencies": {
