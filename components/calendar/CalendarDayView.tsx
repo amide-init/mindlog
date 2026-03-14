@@ -150,9 +150,11 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
 
       <section className="pointer-events-none fixed bottom-4 right-4 z-40 max-w-xs rounded-xl border border-zinc-200 bg-white/90 p-3 text-xs text-zinc-700 shadow-lg backdrop-blur-md dark:border-zinc-800/70 dark:bg-zinc-950/90 dark:text-zinc-200">
         <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-zinc-400 dark:text-zinc-500">
-          <span>Now</span>
+          <span className="pointer-events-auto inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold tracking-[0.16em] text-emerald-700 shadow-sm dark:bg-emerald-900/40 dark:text-emerald-300">
+            Now
+          </span>
           {timeZoneLabel && (
-            <span className="font-medium text-zinc-500 dark:text-zinc-400">
+            <span className="pointer-events-auto font-medium text-zinc-500 dark:text-zinc-400">
               {timeZoneLabel}
             </span>
           )}
