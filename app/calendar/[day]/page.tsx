@@ -41,14 +41,22 @@ export default function CalendarDayPage({ params }: Props) {
 
   const hasSyncedFromUrl = useRef(false);
 
-  // On first render only, let URL diaryId override context diaryId.
+  // On first render only:
+  // - If URL has diaryId, override context once.
+  // - If URL has no diaryId, mark as synced so future changes can write it.
   useEffect(() => {
     if (hasSyncedFromUrl.current) return;
-    if (!urlDiaryId) return;
+
+    if (!urlDiaryId) {
+      hasSyncedFromUrl.current = true;
+      return;
+    }
+
     if (urlDiaryId === diaryId) {
       hasSyncedFromUrl.current = true;
       return;
     }
+
     setDiaryId(urlDiaryId);
     hasSyncedFromUrl.current = true;
   }, [urlDiaryId, diaryId, setDiaryId]);
