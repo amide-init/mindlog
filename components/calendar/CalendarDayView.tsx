@@ -16,6 +16,27 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [now, setNow] = useState<Date>(() => new Date());
+  const [timeZone, setTimeZone] = useState<string>(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem("mindlog-timezone");
+    if (stored) {
+      setTimeZone(stored);
+    }
+
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ timeZone?: string }>).detail;
+      if (detail?.timeZone) {
+        setTimeZone(detail.timeZone);
+      }
+    };
+
+    window.addEventListener("mindlog-timezone-change", handler);
+    return () => window.removeEventListener("mindlog-timezone-change", handler);
+  }, []);
 
   // Tick every second so the clock stays fresh
   useEffect(() => {
@@ -26,6 +47,7 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
   const { dateLabel, timeLabel, timeZoneLabel } = useMemo(() => {
     try {
       const formatter = new Intl.DateTimeFormat(undefined, {
+        timeZone,
         year: "numeric",
         month: "short",
         day: "2-digit",
@@ -39,12 +61,14 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
       const tzPart = parts.find((p) => p.type === "timeZoneName")?.value ?? "";
 
       const datePart = new Intl.DateTimeFormat(undefined, {
+        timeZone,
         year: "numeric",
         month: "short",
         day: "2-digit",
       }).format(now);
 
       const timePart = new Intl.DateTimeFormat(undefined, {
+        timeZone,
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
@@ -63,7 +87,7 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
         timeZoneLabel: Intl.DateTimeFormat().resolvedOptions().timeZone,
       };
     }
-  }, [now]);
+  }, [now, timeZone]);
 
   useEffect(() => {
     if (!diaryId) return;

@@ -43,3 +43,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Query param `id` is required" },
+        { status: 400 },
+      );
+    }
+
+    await prisma.diary.delete({
+      where: { id },
+    });
+
+    // Notes are cascaded via onDelete: Cascade on the relation.
+    return NextResponse.json({ ok: true }, { status: 200 });
+  } catch (error) {
+    console.error("[DELETE /api/diaries] error", error);
+    const message =
+      error instanceof Error ? error.message : "Failed to delete diary";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
