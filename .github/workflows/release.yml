@@ -31,6 +31,8 @@ jobs:
 
       - name: Build app
         run: pnpm build:desktop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v2
