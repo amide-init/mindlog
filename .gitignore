@@ -52,3 +52,8 @@ prisma/*.db
 prisma/*.db-journal
 /app/generated/prisma
 .pnpm-store
+
+# docs (VitePress) build artifacts
+/docs/node_modules
+/docs/.vitepress/cache
+/docs/.vitepress/dist
