@@ -1,5 +1,10 @@
+"use client";
+
+import { use, useEffect, useMemo, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { CalendarDayView } from "@/components/calendar/CalendarDayView";
 import { CurrentDiaryHeader } from "@/components/calendar/CurrentDiaryHeader";
+import { useDiary } from "@/components/calendar/DiaryContext";
 
 type Props = {
   params: Promise<{ day: string }>;
@@ -25,9 +30,27 @@ function formatDayLabel(day: string | undefined) {
   return day;
 }
 
-export default async function CalendarDayPage({ params }: Props) {
-  const { day } = await params;
-  const label = formatDayLabel(day);
+export default function CalendarDayPage({ params }: Props) {
+  const { day } = use(params);
+  const label = useMemo(() => formatDayLabel(day), [day]);
+
+  const searchParams = useSearchParams();
+  const urlDiaryId = searchParams.get("diaryId");
+  const { diaryId, setDiaryId } = useDiary();
+
+  const hasSyncedFromUrl = useRef(false);
+
+  // On first render only, let URL diaryId override context diaryId.
+  useEffect(() => {
+    if (hasSyncedFromUrl.current) return;
+    if (!urlDiaryId) return;
+    if (urlDiaryId === diaryId) {
+      hasSyncedFromUrl.current = true;
+      return;
+    }
+    setDiaryId(urlDiaryId);
+    hasSyncedFromUrl.current = true;
+  }, [urlDiaryId, diaryId, setDiaryId]);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-zinc-100 text-zinc-900 dark:bg-[radial-gradient(circle_at_top,_#18181b,_#020617)] dark:text-zinc-50">

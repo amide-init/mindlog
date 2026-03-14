@@ -19,6 +19,11 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
   useEffect(() => {
     if (!diaryId) return;
     let cancelled = false;
+
+    // Reset state when day or diary changes so the editor remounts
+    setInitialLoaded(false);
+    setContent(undefined);
+
     async function load() {
       try {
         const res = await fetch(
@@ -26,11 +31,10 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
         );
         const data = await res.json();
         if (cancelled) return;
-        if (data.note?.content != null) {
-          setContent(data.note.content);
-        }
+        // Set content to the note's content, or leave undefined for an empty editor
+        setContent(data.note?.content ?? undefined);
       } catch {
-        if (!cancelled) setContent(null);
+        if (!cancelled) setContent(undefined);
       } finally {
         if (!cancelled) setInitialLoaded(true);
       }
@@ -71,8 +75,8 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
     <section className="flex flex-1 flex-col gap-4 md:flex-row">
       <div className="min-w-0 flex-1">
         <EditorPanel
-          key={`${day}-${initialLoaded}`}
-          initialJSON={initialLoaded ? content ?? undefined : undefined}
+          key={`${day}-${diaryId ?? "none"}`}
+          initialJSON={initialLoaded ? content : undefined}
           onChange={setContent}
         />
       </div>

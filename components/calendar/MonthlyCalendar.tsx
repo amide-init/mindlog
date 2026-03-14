@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDiary } from "@/components/calendar/DiaryContext";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -62,6 +63,7 @@ export function MonthlyCalendar() {
   }, [today]);
 
   const router = useRouter();
+  const { diaryId } = useDiary();
 
   const goMonth = (delta: number) => {
     setCursor((prev) => {
@@ -119,7 +121,15 @@ export function MonthlyCalendar() {
             <button
               key={cell.dateKey}
               type="button"
-              onClick={() => router.push(`/calendar/${cell.dateKey}`)}
+              onClick={() => {
+                if (!cell.dateKey) return;
+                const base = `/calendar/${cell.dateKey}`;
+                if (diaryId) {
+                  router.push(`${base}?diaryId=${encodeURIComponent(diaryId)}`);
+                } else {
+                  router.push(base);
+                }
+              }}
               className={`flex h-8 items-center justify-center rounded-md border text-xs transition ${
                 isToday
                   ? "border-zinc-900 bg-zinc-900 text-zinc-50 dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
