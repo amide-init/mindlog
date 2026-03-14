@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActionsPanel } from "@/components/dashboard/ActionsPanel";
 import { EditorPanel } from "@/components/dashboard/EditorPanel";
 import { useDiary } from "@/components/calendar/DiaryContext";
@@ -15,6 +15,55 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
   const [initialLoaded, setInitialLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [now, setNow] = useState<Date>(() => new Date());
+
+  // Tick every second so the clock stays fresh
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const { dateLabel, timeLabel, timeZoneLabel } = useMemo(() => {
+    try {
+      const formatter = new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZoneName: "short",
+      });
+      const parts = formatter.formatToParts(now);
+      const tzPart = parts.find((p) => p.type === "timeZoneName")?.value ?? "";
+
+      const datePart = new Intl.DateTimeFormat(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+      }).format(now);
+
+      const timePart = new Intl.DateTimeFormat(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).format(now);
+
+      return {
+        dateLabel: datePart,
+        timeLabel: timePart,
+        timeZoneLabel: tzPart,
+      };
+    } catch {
+      return {
+        dateLabel: now.toLocaleDateString(),
+        timeLabel: now.toLocaleTimeString(),
+        timeZoneLabel: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      };
+    }
+  }, [now]);
 
   useEffect(() => {
     if (!diaryId) return;
@@ -89,7 +138,25 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
           </div>
         )}
       </div>
-      <div className="w-full shrink-0 md:w-80">
+      <div className="w-full shrink-0 md:w-80 space-y-3">
+        <section className="rounded-xl border border-zinc-200 bg-white/80 p-3 text-xs text-zinc-700 shadow-sm dark:border-zinc-800/70 dark:bg-zinc-950/70 dark:text-zinc-200">
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-zinc-400 dark:text-zinc-500">
+            <span>Now</span>
+            {timeZoneLabel && (
+              <span className="font-medium text-zinc-500 dark:text-zinc-400">
+                {timeZoneLabel}
+              </span>
+            )}
+          </div>
+          <div className="mt-2 text-center">
+            <p className="inline-block rounded-lg border border-zinc-200 bg-white px-4 py-2 text-3xl font-semibold leading-tight text-zinc-900 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50">
+              {timeLabel}
+            </p>
+            <p className="mt-4 text-2xl font-semibold text-zinc-700 dark:text-zinc-200">
+              {dateLabel}
+            </p>
+          </div>
+        </section>
         <ActionsPanel
           onSave={handleSave}
           saving={saving}
