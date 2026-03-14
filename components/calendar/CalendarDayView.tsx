@@ -27,7 +27,9 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
     async function load() {
       try {
         const res = await fetch(
-          `/api/notes?day=${encodeURIComponent(day)}&diaryId=${encodeURIComponent(diaryId)}`,
+          `/api/notes?day=${encodeURIComponent(day)}&diaryId=${encodeURIComponent(
+            diaryId as string,
+          )}`,
         );
         const data = await res.json();
         if (cancelled) return;
@@ -74,11 +76,18 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
   return (
     <section className="flex flex-1 flex-col gap-4 md:flex-row">
       <div className="min-w-0 flex-1">
-        <EditorPanel
-          key={`${day}-${diaryId ?? "none"}`}
-          initialJSON={initialLoaded ? content : undefined}
-          onChange={setContent}
-        />
+        {initialLoaded ? (
+          <EditorPanel
+            key={`${day}-${diaryId ?? "none"}`}
+            initialJSON={content ?? undefined}
+            namespaceSuffix={diaryId ? `${day}-${diaryId}` : day}
+            onChange={setContent}
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-xs text-zinc-500 dark:text-zinc-400">
+            Loading…
+          </div>
+        )}
       </div>
       <div className="w-full shrink-0 md:w-80">
         <ActionsPanel
