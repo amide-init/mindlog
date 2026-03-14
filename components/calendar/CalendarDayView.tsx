@@ -123,46 +123,49 @@ export function CalendarDayView({ day }: CalendarDayViewProps) {
   }, [content, day, diaryId]);
 
   return (
-    <section className="flex flex-1 flex-col gap-4 md:flex-row">
-      <div className="min-w-0 flex-1">
-        {initialLoaded ? (
-          <EditorPanel
-            key={`${day}-${diaryId ?? "none"}`}
-            initialJSON={content ?? undefined}
-            namespaceSuffix={diaryId ? `${day}-${diaryId}` : day}
-            onChange={setContent}
+    <>
+      <section className="flex flex-1 flex-col gap-4 md:flex-row">
+        <div className="min-w-0 flex-1">
+          {initialLoaded ? (
+            <EditorPanel
+              key={`${day}-${diaryId ?? "none"}`}
+              initialJSON={content ?? undefined}
+              namespaceSuffix={diaryId ? `${day}-${diaryId}` : day}
+              onChange={setContent}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-xs text-zinc-500 dark:text-zinc-400">
+              Loading…
+            </div>
+          )}
+        </div>
+        <div className="w-full shrink-0 md:w-80">
+          <ActionsPanel
+            onSave={handleSave}
+            saving={saving}
+            saveError={saveError}
           />
-        ) : (
-          <div className="flex h-full items-center justify-center text-xs text-zinc-500 dark:text-zinc-400">
-            Loading…
-          </div>
-        )}
-      </div>
-      <div className="w-full shrink-0 md:w-80 space-y-3">
-        <section className="rounded-xl border border-zinc-200 bg-white/80 p-3 text-xs text-zinc-700 shadow-sm dark:border-zinc-800/70 dark:bg-zinc-950/70 dark:text-zinc-200">
-          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-zinc-400 dark:text-zinc-500">
-            <span>Now</span>
-            {timeZoneLabel && (
-              <span className="font-medium text-zinc-500 dark:text-zinc-400">
-                {timeZoneLabel}
-              </span>
-            )}
-          </div>
-          <div className="mt-2 text-center">
-            <p className="inline-block rounded-lg border border-zinc-200 bg-white px-4 py-2 text-3xl font-semibold leading-tight text-zinc-900 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50">
-              {timeLabel}
-            </p>
-            <p className="mt-4 text-2xl font-semibold text-zinc-700 dark:text-zinc-200">
-              {dateLabel}
-            </p>
-          </div>
-        </section>
-        <ActionsPanel
-          onSave={handleSave}
-          saving={saving}
-          saveError={saveError}
-        />
-      </div>
-    </section>
+        </div>
+      </section>
+
+      <section className="pointer-events-none fixed bottom-4 right-4 z-40 max-w-xs rounded-xl border border-zinc-200 bg-white/90 p-3 text-xs text-zinc-700 shadow-lg backdrop-blur-md dark:border-zinc-800/70 dark:bg-zinc-950/90 dark:text-zinc-200">
+        <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.16em] text-zinc-400 dark:text-zinc-500">
+          <span>Now</span>
+          {timeZoneLabel && (
+            <span className="font-medium text-zinc-500 dark:text-zinc-400">
+              {timeZoneLabel}
+            </span>
+          )}
+        </div>
+        <div className="mt-2 text-center">
+          <p className="inline-block rounded-lg border border-zinc-200 bg-white px-4 py-2 text-3xl font-semibold leading-tight text-zinc-900 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50">
+            {timeLabel}
+          </p>
+          <p className="mt-4 text-2xl font-semibold text-zinc-700 dark:text-zinc-200">
+            {dateLabel}
+          </p>
+        </div>
+      </section>
+    </>
   );
 }
