@@ -51,6 +51,7 @@ pnpm db:migrate    # run prisma migrations (dev)
 pnpm db:studio     # open Prisma Studio
 pnpm docs:dev      # run docs site locally (http://localhost:5173)
 pnpm docs:build    # build docs for deployment
+pnpm dev:desktop   # run Next.js + Electron desktop shell
 pnpm lint
 pnpm build
 pnpm start

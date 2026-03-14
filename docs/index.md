@@ -4,7 +4,11 @@ MindLog is a local-first diary: **one note per day**, organized by **diary** and
 
 ## Download
 
-- Coming soon (desktop builds)
+> No release published yet. Builds will be available on [GitHub Releases](https://github.com/amide-init/mindlog/releases) once ready.
+
+| Platform | Download |
+| -------- | -------- |
+| macOS    | Coming soon |
 
 ## Getting started (developers)
 
