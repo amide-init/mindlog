@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 generator client {
@@ -7,7 +7,7 @@ generator client {
 }
 
 model Diary {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   name      String
   createdAt DateTime @default(now())
 
@@ -18,7 +18,7 @@ model Note {
   id        String   @id @default(cuid())
   diaryId   String
   diary     Diary    @relation(fields: [diaryId], references: [id], onDelete: Cascade)
-  /** ISO date string like "2026-03-08" representing the day of the entry */
+  /// ISO date string like "2026-03-08" representing the day of the entry
   day       String
   content   Json
   createdAt DateTime @default(now())

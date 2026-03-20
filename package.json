@@ -19,9 +19,9 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/adapter-libsql": "^7.4.2",
+    "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
-    "@libsql/client": "^0.14.0",
+    "pg": "^8.14.1",
     "luxe-edit": "^0.2.2",
     "next": "16.1.6",
     "prisma": "^7.4.2",
@@ -30,6 +30,9 @@
     "zustand": "^5.0.11"
   },
   "pnpm": {
+    "overrides": {
+      "@types/pg": "8.11.11"
+    },
     "onlyBuiltDependencies": [
       "@prisma/engines",
       "better-sqlite3",
@@ -38,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "@types/pg": "8.11.11",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
